@@ -28,9 +28,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     EditText course_name;
     EditText course_code;
+    EditText user_id;
     Button createCourseButton;
     Button updateCourseButton;
     Button deleteCourseButton;
+    Button deleteUserButton;
     ListView course_list;
 
     //Firebase
@@ -45,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
 
         course_name = findViewById(R.id.courseName);
         course_code = findViewById(R.id.courseCode);
+        user_id = findViewById(R.id.userID);
         createCourseButton = findViewById(R.id.createCourseButton);
         updateCourseButton = findViewById(R.id.updateCourseButton);
         deleteCourseButton = findViewById(R.id.deleteCourseButton);
+        deleteUserButton = findViewById(R.id.deleteUserButton);
         course_list = findViewById(R.id.courseList);
 
         list = new ArrayList<>();
@@ -71,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteCourse();
+            }
+        });
+
+        deleteUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUser(user_id.getText().toString().trim());
             }
         });
     }
@@ -165,26 +176,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void deleteUser(String userID){
+        if(!TextUtils.isEmpty(userID)){
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference myRef = ref.child("User").child(userID);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(MainActivity.this,"The user does not exist", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        dataSnapshot.getRef().removeValue();
+                        Toast.makeText(MainActivity.this,"User is deleted now", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+            user_id.setText("");
+        }
+        else{
+            Toast.makeText(this,"please enter a user name", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void deleteCourse(){
         String coursename = course_name.getText().toString().trim();
         String coursecode = course_code.getText().toString().trim();
 
         if(!TextUtils.isEmpty(coursename)){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            Query myQuery = ref.child("Course").orderByChild("courseCode").equalTo(coursecode);
-
-            myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference myRef = ref.child("Course").child(coursecode);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot mySP: dataSnapshot.getChildren()) {
-                        mySP.getRef().removeValue();
-                        Toast.makeText(MainActivity.this, "Course deleted", Toast.LENGTH_SHORT).show();
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(MainActivity.this,"The course does not exist", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        dataSnapshot.getRef().removeValue();
+                        Toast.makeText(MainActivity.this,"Course is deleted now", Toast.LENGTH_LONG).show();
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this, "Course does not exist", Toast.LENGTH_SHORT).show();
                 }
             });
 
