@@ -1,4 +1,4 @@
-# SEG2105 Summer 2021 Teerm Project
+# SEG2105 Summer 2021 Term Project
 
 ## Completed by:
 
