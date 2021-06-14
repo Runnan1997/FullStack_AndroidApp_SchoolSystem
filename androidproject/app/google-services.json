@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "28442323968",
+    "firebase_url": "https://project-seg2105-default-rtdb.firebaseio.com",
+    "project_id": "project-seg2105",
+    "storage_bucket": "project-seg2105.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28442323968:android:fcd72c95e5d8d8470bbce5",
+        "android_client_info": {
+          "package_name": "com.example.project_seg2105"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "28442323968-6popq5bo9jkn4cs0mk7pgr79mkfnfraq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj7GMjLdB5B7azhlRm5yTxANSui_hjGBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "28442323968-6popq5bo9jkn4cs0mk7pgr79mkfnfraq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28442323968:android:5d40a51e2c466bd10bbce5",
+        "android_client_info": {
+          "package_name": "com.smallacademy.userroles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "28442323968-6popq5bo9jkn4cs0mk7pgr79mkfnfraq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj7GMjLdB5B7azhlRm5yTxANSui_hjGBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "28442323968-6popq5bo9jkn4cs0mk7pgr79mkfnfraq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
