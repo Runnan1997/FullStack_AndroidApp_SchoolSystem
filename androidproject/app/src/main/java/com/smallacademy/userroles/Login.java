@@ -92,7 +92,7 @@ public class Login extends AppCompatActivity {
                     finish();
                 }
                 if(documentSnapshot.getString("isAdministrator")!=null){
-                    //startActivity(new Intent(getApplicationContext(),Administrator.class));
+                    startActivity(new Intent(getApplicationContext(),Administrator.class));
                     finish();
                 }
             }
