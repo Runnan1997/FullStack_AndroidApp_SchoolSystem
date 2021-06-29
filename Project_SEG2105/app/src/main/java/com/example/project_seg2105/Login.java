@@ -1,143 +1,95 @@
 package com.example.project_seg2105;
 
+import android.content.Context;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import java.security.MessageDigest;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Login extends AppCompatActivity {
-    EditText email,password;
-    Button loginBtn,gotoRegister;
-    boolean valid = true;
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
+    //Firebase
+    FirebaseDatabase database;
+    DatabaseReference users;
+
+    EditText Name;
+    EditText Password;
+    Button SignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
 
-        email = findViewById(R.id.loginEmail);
-        password = findViewById(R.id.loginPassword);
-        loginBtn = findViewById(R.id.loginBtn);
-        gotoRegister = findViewById(R.id.gotoRegister);
+        Name = (EditText)findViewById(R.id.name);
+        Password = (EditText)findViewById(R.id.psw);
+        SignIn = (Button)findViewById(R.id.btnlogin);
+        //FireBase
+        database = FirebaseDatabase.getInstance();
+        users = database.getReference("Users");
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkField(email);
-                checkField(password);
-                if (valid){
-                    fAuth.signInWithEmailAndPassword(email.getText().toString()+"@whateverdomain.com",password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(Login.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
-                            checkUserAccessLevel(authResult.getUser().getUid());
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-                }
+            public void onClick(View v){
+                signIn(Name.getText().toString(),Password.getText().toString());
             }
         });
-
-        gotoRegister.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Register.class));
-            }
-        }));
-
-
-
-
     }
-
-    private void checkUserAccessLevel(String uid) {
-        DocumentReference df = fStore.collection("Users").document(uid);
-        //extract data from the document
-        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    public void openSignUp(){
+        Intent intent = new Intent(this, SignUp.class);
+        startActivity(intent);
+    }
+    private void signIn(final String username, final String psw){
+        users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d("TAG","OnSuccess: " + documentSnapshot.getData());
-                //identify the user access Level
-                if(documentSnapshot.getString("isInstructor")!=null){
-                    //user is a teacher
-                    startActivity(new Intent(getApplicationContext(),Admin.class));
-                    finish();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(username).exists()){
+                    if(!username.isEmpty()) {
+                        User login = dataSnapshot.child(username).getValue(User.class);
+                        if (login.getPassword().equals(psw)) {
+                            Toast.makeText(Login.this, "Login successfully", Toast.LENGTH_SHORT).show();
+                            Intent passname = new Intent(getApplicationContext(),Home.class);
+                            passname.putExtra("username", username);
+                            passname.putExtra("roletype", login.getRole());
+                            startActivity(passname);
+                        }
+                        else {
+                            Toast.makeText(Login.this, "Wrong password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(Login.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                //user is a student
-                if(documentSnapshot.getString("isStudent")!=null){
-                    startActivity(new Intent(getApplicationContext(),Activity.class));
-                    finish();
+                else{
+                    Toast.makeText(Login.this, "User is not registered", Toast.LENGTH_SHORT).show();
                 }
-                if(documentSnapshot.getString("isAdministrator")!=null){
-                    //startActivity(new Intent(getApplicationContext(),Administrator.class));
-                    finish();
-                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //custom code
             }
         });
     }
 
-    public boolean checkField(EditText textField){
-        if(textField.getText().toString().isEmpty()){
-            textField.setError("Error");
-            valid = false;
-        }else {
-            valid = true;
-        }
-
-        return valid;
-    }
-
-    @Override
-    //if user is already logged into to the app previously
-    protected void onStart() {
-        super.onStart();
-        if(FirebaseAuth.getInstance().getCurrentUser()!= null){
-            DocumentReference df = FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                //change this soon, for now, they all go back to login page
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.getString("isInstructor")!=null){
-                        startActivity(new Intent(getApplicationContext(), Login.class));
-                        finish();
-                    }
-                    if(documentSnapshot.getString("isStudent")!=null){
-                        startActivity(new Intent(getApplicationContext(), Login.class));
-                        finish();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //send them to login if it fails
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(getApplicationContext(),Login.class));
-                    finish();
-                }
-            });
-        }
-    }
 }

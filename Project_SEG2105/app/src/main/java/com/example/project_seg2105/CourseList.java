@@ -30,7 +30,12 @@ public class CourseList extends ArrayAdapter<Course> {
         TextView courseCode = (TextView) listViewItem.findViewById(R.id.courseInfo);
 
         Course c = course.get(position);
-        courseCode.setText(c.getCourseCode() + " " + c.getCourseName());
+        if(c.getiName() != null) {
+            courseCode.setText(c.getCourseCode() + " " + c.getCourseName() + " " + c.getiName());
+        }
+        else{
+            courseCode.setText(c.getCourseCode() + " " + c.getCourseName());
+        }
         return listViewItem;
     }
 
