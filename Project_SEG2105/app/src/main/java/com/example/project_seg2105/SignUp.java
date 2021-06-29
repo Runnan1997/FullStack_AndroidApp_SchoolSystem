@@ -54,7 +54,6 @@ public class SignUp extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         final String roletype = bundle.getString("roletype");
 
-
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,7 +96,9 @@ public class SignUp extends AppCompatActivity {
 
             }
         });
-
     }
 
+    public static boolean emailValidaiton(String email){
+        return email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
+    }
 }

@@ -11,7 +11,29 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void coursegetCourseName_isCorrect() {
+        Course c = new Course("ITI1100", "Digital System");
+        assertEquals("Digital System", c.getCourseName());
+    }
+
+    @Test
+    public void coursegetCourseCode_isCorrect() {
+        Course c = new Course("ITI1100", "Digital System");
+        assertEquals("ITI1100", c.getCourseCode());
+    }
+
+    @Test
+    public void matchCourseNameformat_True() {
+        assertTrue(searchCourse.matchformat("History"));
+    }
+
+    @Test
+    public void matchCourseNameformat_False() {
+        assertFalse(searchCourse.matchformat("1234ERv"));
+    }
+
+    @Test
+    public void emailValidaiton_isTrue() {
+        assertTrue(SignUp.emailValidaiton("rguo100@gmail.com"));
     }
 }

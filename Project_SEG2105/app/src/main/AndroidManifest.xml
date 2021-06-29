@@ -22,6 +22,7 @@
         <activity android:name=".Admin" />
         <activity android:name=".searchCourse" />
         <activity android:name=".Instructor" />
+        <activity android:name=".InstructorSet" />
     </application>
 
 </manifest>

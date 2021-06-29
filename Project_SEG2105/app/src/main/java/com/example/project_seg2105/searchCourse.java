@@ -122,73 +122,32 @@ public class searchCourse extends AppCompatActivity {
 
     }
 
+    public static boolean matchformat(String course){
+        return course.matches("[a-zA-Z]+");
+    }
+
     private void assignCourse(){
         String coursename = course_name.getText().toString().trim();
         String coursecode = course_code.getText().toString().trim();
-        String courseDes = course_des.getText().toString().trim();
         String insName = iname.getText().toString().trim();
-        String day = "";
-        String time = "";
-        String cap = "";
 
-        if(mon.isChecked()){
-            day = "monday";
-        }
-        if(tues.isChecked()){
-            day = "tuesday";
-        }
-        if(wed.isChecked()){
-            day = "wednesday";
-        }
-        if(thurs.isChecked()){
-            day = "thursday";
-        }
-        if(fri.isChecked()){
-            day = "friday";
-        }
-
-        if(tenAM.isChecked()){
-            time = "10AM";
-        }
-        if(onePM.isChecked()){
-            time = "1PM";
-        }
-        if(threePM.isChecked()){
-            time = "3PM";
-        }
-        if(fivePM.isChecked()){
-            time = "5PM";
-        }
-        if(sevenPM.isChecked()){
-            time = "7PM";
-        }
-
-        if(threeC.isChecked()){
-            cap = "30 people";
-        }
-        if(eightC.isChecked()){
-            cap = "80 people";
-        }
-        if(fifteenC.isChecked()){
-            cap = "150 people";
-        }
-
-        if(!TextUtils.isEmpty(coursecode)){
+        if(!TextUtils.isEmpty(coursecode) && !TextUtils.isEmpty(coursename)){
             String id = ref.push().getKey();
             final Course cour = new Course(id, coursename,coursecode,insName);
-            String finalDay = day;
-            String finalTime = time;
-            String finalCap = cap;
-            if(day != "" && time !="" && cap != "") {
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.child(cour.getCourseCode()).exists()) {
                             Course dbcc = dataSnapshot.child(cour.getCourseCode()).getValue(Course.class);
-                            if (dbcc.getiName() == null) {
-                                Course cc = new Course(coursename, coursecode, insName, finalDay, finalTime, finalCap, courseDes);
+                            if (dbcc.getiName() == null || dbcc.getiName().equals(insName)) {
+                                Course cc = new Course(coursename, coursecode, insName);
                                 ref.child(cc.getCourseCode()).setValue(cc);
-                                Toast.makeText(searchCourse.this, "The course is assigned now", Toast.LENGTH_SHORT).show();
+                                Intent passname = new Intent(getApplicationContext(),InstructorSet.class);
+                                passname.putExtra("coursename",coursename);
+                                passname.putExtra("coursecode", coursecode);
+                                passname.putExtra("insname", insName);
+                                startActivity(passname);
+                                Toast.makeText(searchCourse.this, "The course is assigned to you", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(searchCourse.this, "The course is already assigned.", Toast.LENGTH_LONG).show();
                             }
@@ -206,12 +165,8 @@ public class searchCourse extends AppCompatActivity {
                 course_code.setText("");
             }
             else {
-                Toast.makeText(searchCourse.this, "Please choose a day/time/capacity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(searchCourse.this, "Please enter all the information", Toast.LENGTH_SHORT).show();
             }
-        }
-        else{
-            Toast.makeText(this,"please enter all the information", Toast.LENGTH_LONG).show();
-        }
     }
 
     private void unassignCourse() {
