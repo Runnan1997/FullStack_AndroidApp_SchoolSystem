@@ -16,6 +16,16 @@ public class Course {
     public String id;
     public String iName;
 
+    public String getsName() {
+        return sName;
+    }
+
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
+
+    public String sName;
+
     public Course(String courseName, String courseCode, String iName, String day, String time, String capacity, String courseDes) {
         this.courseName = courseName;
         this.courseCode = courseCode;
@@ -24,6 +34,10 @@ public class Course {
         this.time = time;
         this.capacity = capacity;
         this.courseDes = courseDes;
+    }
+
+    public Course(String day){
+        this.day = day;
     }
 
     public String getDay() {

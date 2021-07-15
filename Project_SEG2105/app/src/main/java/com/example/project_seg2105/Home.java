@@ -44,6 +44,11 @@ public class Home extends AppCompatActivity {
                     passname.putExtra("username", username);
                     startActivity(passname);
                 }
+                else if(role2.equals("Student")){
+                    Intent passname = new Intent(getApplicationContext(),Student.class);
+                    passname.putExtra("username", username);
+                    startActivity(passname);
+                }
             }
         });
     }

@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_SEG2105">
+        <activity android:name=".StudentCourseList"></activity>
+        <activity android:name=".StudentCourses" />
+        <activity android:name=".StudentCourse" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +26,7 @@
         <activity android:name=".searchCourse" />
         <activity android:name=".Instructor" />
         <activity android:name=".InstructorSet" />
+        <activity android:name=".Student" />
     </application>
 
 </manifest>

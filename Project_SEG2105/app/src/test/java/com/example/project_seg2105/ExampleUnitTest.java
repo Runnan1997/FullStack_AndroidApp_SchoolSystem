@@ -36,4 +36,9 @@ public class ExampleUnitTest {
     public void emailValidaiton_isTrue() {
         assertTrue(SignUp.emailValidaiton("rguo100@gmail.com"));
     }
+
+    @Test
+    public void emailValidaiton_isFalse() {
+        assertFalse(SignUp.emailValidaiton("afnkdsafn"));
+    }
 }
