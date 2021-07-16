@@ -110,7 +110,6 @@ public class searchCourse extends AppCompatActivity {
                 else{
                     cooo.setText(ic.getCourseName());
                 }
-
             }
 
             @Override
@@ -118,15 +117,13 @@ public class searchCourse extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     public static boolean matchformat(String course){
         return course.matches("[a-zA-Z]+");
     }
 
-    private void assignCourse(){
+    private void assignCourse() {
         String coursename = course_name.getText().toString().trim();
         String coursecode = course_code.getText().toString().trim();
         String insName = iname.getText().toString().trim();
@@ -216,7 +213,7 @@ public class searchCourse extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         ref.addValueEventListener(new ValueEventListener() {
             @Override
